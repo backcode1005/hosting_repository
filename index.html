@@ -2,12 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>야간 근무 체크리스트</title>
   <style>
-    @page {
-      size: A4 portrait;
-      margin: 10mm;
-    }
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,16 +12,19 @@
     }
     body {
       font-family: "Malgun Gothic", "맑은 고딕", sans-serif;
-      background-color: #ffffff;
+      background-color: #f4f6f9;
       color: #000000;
-      padding: 20px;
+      padding: 15px;
     }
     .container {
       width: 100%;
       max-width: 800px;
       margin: 0 auto;
+      background-color: #ffffff;
       border: 2px solid #000000;
-      padding: 25px 30px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border-radius: 8px;
     }
     
     /* 상단 헤더 & 결재란 */
@@ -35,21 +35,23 @@
       border-bottom: 2px solid #000000;
       padding-bottom: 12px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     .title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
       letter-spacing: -1px;
     }
     .info-table {
       border-collapse: collapse;
+      width: 100%;
     }
     .info-table th, .info-table td {
       border: 1px solid #000000;
-      padding: 5px 10px;
-      font-size: 13px;
+      padding: 6px 8px;
+      font-size: 12px;
       text-align: center;
-      white-space: nowrap;
     }
     .info-table th {
       background-color: #f2f2f2;
@@ -60,22 +62,24 @@
     .section {
       border: 1px solid #000000;
       margin-bottom: 15px;
+      border-radius: 4px;
+      overflow: hidden;
     }
     .section-header {
       background-color: #f2f2f2;
       border-bottom: 1px solid #000000;
       padding: 8px 12px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
     }
     .task-group {
-      padding: 10px 15px;
+      padding: 10px 12px;
     }
     .task-item {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 0;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
       border-bottom: 1px dotted #dddddd;
     }
     .task-item:last-child {
@@ -84,14 +88,17 @@
 
     /* CSS 체크박스 & 취소선 처리 */
     .chk {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       cursor: pointer;
       flex-shrink: 0;
+      margin-top: 1px;
     }
     .chk-label {
       font-size: 14px;
       cursor: pointer;
+      line-height: 1.4;
+      word-break: break-all;
     }
     .chk:checked + .chk-label {
       text-decoration: line-through;
@@ -102,11 +109,51 @@
     .warning-box {
       background-color: #fff0f0;
       border-left: 3px solid #d32f2f;
-      padding: 4px 8px;
-      margin: 4px 0 4px 24px;
-      font-size: 13px;
+      padding: 6px 10px;
+      margin: 6px 0 6px 24px;
+      font-size: 12px;
       color: #d32f2f;
       font-weight: bold;
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* 초기화 버튼 스타일 */
+    .btn-container {
+      text-align: right;
+      margin-bottom: 15px;
+    }
+    .reset-btn {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .reset-btn:hover {
+      background-color: #e03131;
+    }
+
+    /* 모바일 환경 최적화 */
+    @media (max-width: 600px) {
+      body {
+        padding: 5px;
+      }
+      .container {
+        padding: 12px;
+      }
+      .title {
+        font-size: 18px;
+      }
+      .info-table th, .info-table td {
+        font-size: 11px;
+        padding: 4px 5px;
+      }
+      .chk-label {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -119,7 +166,7 @@
       <table class="info-table">
         <tr>
           <th>작성일자</th>
-          <td>2026-11-05</td>
+          <td id="current-date">2026-11-05</td>
           <th>근무조</th>
           <td>야간 (23:00~07:00)</td>
           <th>근무자</th>
@@ -226,11 +273,18 @@
           </div>
           <div class="task-item">
             <input type="checkbox" id="t14" class="chk">
-            <label for="t14" class="chk-label">모기 잡기: 매장 내 모기 수시로 퇴치</label>
+            <label for="t14" class="chk-label">도중회수금: 도중회수금 알람이 뜨면 해당 금액만큼 돈을 고무줄로 묶어 일단 두기</label>
           </div>
           <div class="task-item">
             <input type="checkbox" id="t15" class="chk">
-            <label for="t15" class="chk-label">빈병 수거: 영수증 발행 + 돈 지급 + 병 정리</label>
+            <label for="t15" class="chk-label">모기 잡기: 매장 내 모기 수시로 퇴치</label>
+          </div>
+          <div class="task-item">
+            <input type="checkbox" id="t16" class="chk">
+            <label for="t16" class="chk-label">빈병 수거: 영수증 발행 + 돈 지급 + 병 정리</label>
+          </div>
+          <div class="warning-box">
+            ※ 주의: 꼭 빈병 영수증 해놓기
           </div>
         </div>
       </div>
@@ -240,26 +294,25 @@
         <div class="section-header">마무리 업무 (06:30 ~)</div>
         <div class="task-group">
           <div class="task-item">
-            <input type="checkbox" id="t16" class="chk">
-            <label for="t16" class="chk-label">담배 채운 것 최종 확인</label>
-          </div>
-          <div class="task-item">
             <input type="checkbox" id="t17" class="chk">
-            <label for="t17" class="chk-label">술 채운 것 최종 확인</label>
+            <label for="t17" class="chk-label">담배 채운 것 최종 확인</label>
           </div>
           <div class="task-item">
             <input type="checkbox" id="t18" class="chk">
-            <label for="t18" class="chk-label">라면 물품 채운 것 최종 확인</label>
+            <label for="t18" class="chk-label">술 채운 것 최종 확인</label>
           </div>
           <div class="task-item">
             <input type="checkbox" id="t19" class="chk">
-            <label for="t19" class="chk-label">냉장식품 앞으로 잘 꺼내져 있는지(전면 진열) 최종 확인</label>
+            <label for="t19" class="chk-label">라면 물품 채운 것 최종 확인</label>
+          </div>
+          <div class="task-item">
+            <input type="checkbox" id="t20" class="chk">
+            <label for="t20" class="chk-label">냉장식품 앞으로 잘 꺼내져 있는지(전면 진열) 최종 확인</label>
           </div>
         </div>
       </div>
 
     </div>
   </div>
-
 </body>
 </html>
